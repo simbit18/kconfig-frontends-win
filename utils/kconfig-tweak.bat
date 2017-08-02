@@ -87,28 +87,47 @@ exit
    set newline=%~2
    set beforevar=%3
    set "foundname="
+   set "foundbefore="
+
    rem echo SetVar: varname=%varname%; newline=%newline%; beforevar=%beforevar%
    
    set name_re="^(%varname%=|# %varname% is not set)"
    rem echo name_re=%name_re%; before_re=%before_re%
 
    grep -Eq %name_re% %configfilename% && set "foundname=y"
+   
    if not "%beforevar%"=="" (
       set before_re="^(%beforevar%=|# %beforevar% is not set)"
-      set "foundbefore="
       grep -Eq %before_re% %configfilename% && set "foundbefore=y"
       if defined foundbefore (
-         echo Found before
-      ) else (
-         echo Didn't find before
+         call :TxtAppend "^%beforevar%=" "%newline%" "%configfilename%"
+         call :TxtAppend "^# %beforevar% is not set" "%newline%" "%configfilename%"
       )
-   ) else (
-      
    )
    
+   if not defined foundbefore (
+      if defined foundname (
+         call :TxtSubst "^%varname%=.*" "%newline%" "%configfilename%"
+         call :TxtSubst "^# %varname% is not set" "%newline%" "%configfilename%"
+      ) else (
+         echo %newline%>>"%configfilename%"
+      )
+   )
+exit /B
+
+:TxtAppend
+   echo TxtAppend %1 %2 %3
+exit /B
+
+:TxtSubst
+   set before=%~1
+   set after=%~2
+   set infile=%~3
+   set tmpfile=%infile%.swp
    
-   
-   
+   rem echo sed -e "s/%before%/%after%/" "%infile%"
+   sed -e "s/%before%/%after%/" "%infile%" >"%tmpfile%"
+   mv "%tmpfile%" "%infile%"
 exit /B
 
 :Usage
