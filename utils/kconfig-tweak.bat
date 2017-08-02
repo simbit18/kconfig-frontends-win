@@ -44,23 +44,28 @@ set "munge_case=y"
    )
    
    for %%i in (--module -m) do if %thiscmd%==%%i (
-      echo Module!
+      rem echo Module!
+      call :SetVar %thiscmdargone% "%thiscmdargone%=m"
    )
    
    if %thiscmd%==--set-str (
-      echo Set-str!
+      rem echo Set-str!
+      call :SetVar %thiscmdargone% "%thiscmdargone%=\"%thiscmdargtwo%\""
    )
    
    if %thiscmd%==--set-val (
-      echo Set-val!
+      rem echo Set-val!
+      call :SetVar %thiscmdargone% "%thiscmdargone%=%thiscmdargtwo%"
    )
 
    for %%i in (--undefine -u) do if %thiscmd%==%%i (
-      echo Undefine!
+      rem echo Undefine!
+      call :UndefVar %thiscmdargone%
    )
    
    for %%i in (--state -s) do if %thiscmd%==%%i (
-      echo State!
+      rem echo State!
+      call :PrintVarState %thiscmdargone%
    )
    
    for %%i in (--enable-after -E) do if %thiscmd%==%%i (
@@ -115,8 +120,30 @@ exit
    )
 exit /B
 
+:UndefVar
+   set varname=%1
+
+   call :TxtDelete "^%varname%=" "%configfilename%"
+   call :TxtDelete "^# %varname% is not set" "%configfilename%"
+exit /B
+
+:PrintVarState
+   set varname=%1
+   
+exit /B
+
 :TxtAppend
    echo TxtAppend %1 %2 %3
+exit /B
+
+:TxtDelete
+   set texttodelete=%~1
+   set infile=%~2
+   set tmpfile=%infile%.swp
+   
+   rem sed -e "/$text/d" "$infile" >"$tmpfile"
+   sed -e "/%texttodelete%/d" "%infile%" >"%tmpfile%"
+   mv "%tmpfile%" "%infile%"
 exit /B
 
 :TxtSubst
