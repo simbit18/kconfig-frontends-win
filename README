@@ -7,7 +7,24 @@ the kernel build infrastructure.
 
 This package has been ported to Windows, so the code has been changed to get
 it work properly. The package also contains a copy PDCurses with some minor
-changes. By now only the the mconf tool has been ported.
+changes. By now only the following tools have been ported:
+ - kconfig-conf
+ - kconfig-mconf
 
 Under non Windows platforms use the original package from:
 http://ymorin.is-a-geek.org/projects/kconfig-frontends
+
+
+General Build Instructions
+
+Install GnuWin32, MinGW, and CMake.
+
+git clone https://github.com/reclone/kconfig-frontends-win32.git
+cd kconfig-frontends-win32
+mkdir build
+cd build
+cmake -G "MinGW Makefiles" ..
+make
+
+cp ./bin/kconfig-mconf.exe c:/gnuwin32/bin/
+cp ./bin/kconfig-conf.exe c:/gnuwin32/bin/
