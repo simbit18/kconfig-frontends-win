@@ -1,0 +1,150 @@
+@echo off
+
+rem Manipulate options in a .config file from the command line
+setlocal enableextensions
+set myname=%~n0
+
+REM echo %0 %1 %2 %3 %4 %5 %6 %7
+
+set configfilename=%~2
+if "%1"=="--file" (
+   rem echo configfilename=%configfilename%
+   if "%configfilename%"=="" (
+      call :Usage
+      exit 2
+   )
+) else set configfilename=.config
+
+if "%1"=="" (
+   call :Usage
+   exit 1
+)
+
+set "munge_case=y"
+
+:StartArgLoop
+   if "%1"=="" goto :EndArgLoop
+   set thiscmd=%1
+   set thiscmdargone=%2
+   set thiscmdargtwo=%3
+   shift
+   
+   for %%i in (--keep-case -k) do if %thiscmd%==%%i (
+      set "munge_case="
+   )
+   
+   for %%i in (--disable -d) do if %thiscmd%==%%i (
+      rem echo Disable!
+      call :SetVar %thiscmdargone% "# %thiscmdargone% is not set"
+   )
+   
+   for %%i in (--enable -e) do if %thiscmd%==%%i (
+      rem echo Enable!
+      call :SetVar %thiscmdargone% "%thiscmdargone%=y"
+   )
+   
+   for %%i in (--module -m) do if %thiscmd%==%%i (
+      echo Module!
+   )
+   
+   if %thiscmd%==--set-str (
+      echo Set-str!
+   )
+   
+   if %thiscmd%==--set-val (
+      echo Set-val!
+   )
+
+   for %%i in (--undefine -u) do if %thiscmd%==%%i (
+      echo Undefine!
+   )
+   
+   for %%i in (--state -s) do if %thiscmd%==%%i (
+      echo State!
+   )
+   
+   for %%i in (--enable-after -E) do if %thiscmd%==%%i (
+      echo Enable-after!
+   )
+   
+   for %%i in (--disable-after -D) do if %thiscmd%==%%i (
+      echo Disable-after!
+   )
+   
+   for %%i in (--module-after -M) do if %thiscmd%==%%i (
+      echo Module-after!
+   )
+
+   rem echo Processed arg: %thiscmd%
+   
+goto :StartArgLoop
+:EndArgLoop
+
+exit
+
+:SetVar
+   set varname=%1
+   set newline=%~2
+   set beforevar=%3
+   set "foundname="
+   rem echo SetVar: varname=%varname%; newline=%newline%; beforevar=%beforevar%
+   
+   set name_re="^(%varname%=|# %varname% is not set)"
+   rem echo name_re=%name_re%; before_re=%before_re%
+
+   grep -Eq %name_re% %configfilename% && set "foundname=y"
+   if not "%beforevar%"=="" (
+      set before_re="^(%beforevar%=|# %beforevar% is not set)"
+      set "foundbefore="
+      grep -Eq %before_re% %configfilename% && set "foundbefore=y"
+      if defined foundbefore (
+         echo Found before
+      ) else (
+         echo Didn't find before
+      )
+   ) else (
+      
+   )
+   
+   
+   
+   
+exit /B
+
+:Usage
+   echo %myname%: Manipulate options in a .config file from the command line.
+   echo.
+   echo Usage:
+   echo    %myname% options command ...
+   echo.
+   echo commands:
+   echo    --enable,-e option   Enable option
+   echo    --disable,-d option  Disable option
+   echo    --module,-m option   Turn option into a module
+   echo    --set-str option string
+   echo       Set option to "string"
+   echo    --set-val option value
+   echo       Set option to value
+   echo    --undefine,-u option Undefine option
+   echo    --state,-s option    Print state of option (n,y,m,undef)
+   echo.
+   echo    --enable-after,-E beforeopt option
+   echo       Enable option directly after other option
+   echo    --disable-after,-D beforeopt option
+   echo       Disable option directly after other option
+   echo    --module-after,-M beforeopt option
+   echo       Turn option into module directly after other option
+   echo.
+   echo    Commands can be repeated multiple times.
+   echo.
+   echo options:
+   echo    --file config-file   .config file to change (default .config)
+   echo    --keep-case,-k       Keep next symbols' case (dont' upper-case it)
+   echo.
+   echo %myname% doesn't check the validity of the .config file. This is done at next
+   echo make time.
+   echo.
+   echo By default, %myname% will upper-case the given symbol. Use --keep-case to keep
+   echo the case of all following symbols unchanged.
+   echo.
+exit /B

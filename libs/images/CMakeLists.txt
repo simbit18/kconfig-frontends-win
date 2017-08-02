@@ -11,10 +11,10 @@ add_custom_command(
 
 add_custom_command(
   OUTPUT images.h
-  DEPENDS images.c_orig
+  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/images.c_orig
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
   COMMAND sed -e "/^static \\(const char \\*xpm_\\(.\\{1,\\}\\)\\[\\]\\) = {/!d; s//extern \\1;/"
-    ${CMAKE_CURRENT_SOURCE_DIR}/images.c_orig
-    > images.h
+    images.c_orig > ${CMAKE_CURRENT_BINARY_DIR}/images.h
 )
 
 add_custom_target(images-header DEPENDS images.h)

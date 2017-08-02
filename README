@@ -18,6 +18,9 @@ http://ymorin.is-a-geek.org/projects/kconfig-frontends
 General Build Instructions
 
 Install GnuWin32, MinGW, and CMake.
+Add C:\MinGW\bin;C:\gnuwin32\bin to the %Path% environment variable.
+Add C:\gnuwin32\include to the %INCLUDE% environment variable.
+Add C:\gnuwin32\lib to the %LIB% environemnt variable.
 
 git clone https://github.com/reclone/kconfig-frontends-win32.git
 cd kconfig-frontends-win32
