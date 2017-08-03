@@ -87,6 +87,7 @@ goto :StartArgLoop
 
 exit
 
+
 :SetVar
    set varname=%1
    set newline=%~2
@@ -120,6 +121,7 @@ exit
    )
 exit /B
 
+
 :UndefVar
    set varname=%1
 
@@ -127,14 +129,29 @@ exit /B
    call :TxtDelete "^# %varname% is not set" "%configfilename%"
 exit /B
 
+
 :PrintVarState
    set varname=%1
-   
+:PrintVarStateN
+   grep -q "# %varname% is not set" "%configfilename%"
+   if errorlevel 1 goto :PrintVarStatePresent
+   echo n
+   goto :EndPrintVarState
+:PrintVarStatePresent
+   grep -q "^%varname%=" "%configfilename%"
+   if errorlevel 1 goto :PrintVarStateAbsent
+   grep "^%varname%=" "%configfilename%" | sed -r "s/^%varname%=//"
+   goto :EndPrintVarState
+:PrintVarStateAbsent
+  echo undef
+:EndPrintVarState
 exit /B
+
 
 :TxtAppend
    echo TxtAppend %1 %2 %3
 exit /B
+
 
 :TxtDelete
    set texttodelete=%~1
@@ -146,6 +163,7 @@ exit /B
    mv "%tmpfile%" "%infile%"
 exit /B
 
+
 :TxtSubst
    set before=%~1
    set after=%~2
@@ -156,6 +174,7 @@ exit /B
    sed -e "s/%before%/%after%/" "%infile%" >"%tmpfile%"
    mv "%tmpfile%" "%infile%"
 exit /B
+
 
 :Usage
    echo %myname%: Manipulate options in a .config file from the command line.
