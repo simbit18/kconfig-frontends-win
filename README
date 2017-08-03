@@ -10,6 +10,7 @@ it work properly. The package also contains a copy PDCurses with some minor
 changes. By now only the following tools have been ported:
  - kconfig-conf
  - kconfig-mconf
+ - kconfig-tweak (as a .bat file)
 
 Under non Windows platforms use the original package from:
 http://ymorin.is-a-geek.org/projects/kconfig-frontends
@@ -31,3 +32,4 @@ make
 
 cp ./bin/kconfig-mconf.exe c:/gnuwin32/bin/
 cp ./bin/kconfig-conf.exe c:/gnuwin32/bin/
+cp ../utils/kconfig-tweak.bat c:/gnuwin32/bin
