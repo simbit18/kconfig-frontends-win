@@ -1,7 +1,8 @@
 @echo off
 
 rem Manipulate options in a .config file from the command line
-setlocal enableextensions
+setlocal EnableExtensions
+setlocal EnableDelayedExpansion
 set myname=%~n0
 
 REM echo %0 %1 %2 %3 %4 %5 %6 %7
@@ -69,15 +70,18 @@ set "munge_case=y"
    )
    
    for %%i in (--enable-after -E) do if %thiscmd%==%%i (
-      echo Enable-after!
+      rem echo Enable-after!
+      call :SetVar %thiscmdargone% "%thiscmdargone%=y" %thiscmdargtwo%
    )
    
    for %%i in (--disable-after -D) do if %thiscmd%==%%i (
-      echo Disable-after!
+      rem echo Disable-after!
+      call :SetVar %thiscmdargone% "# %thiscmdargone% is not set" %thiscmdargtwo%
    )
    
    for %%i in (--module-after -M) do if %thiscmd%==%%i (
-      echo Module-after!
+      rem echo Module-after!
+      call :SetVar %thiscmdargone% "%thiscmdargone%=m" %thiscmdargtwo%
    )
 
    rem echo Processed arg: %thiscmd%
@@ -98,14 +102,15 @@ exit
    rem echo SetVar: varname=%varname%; newline=%newline%; beforevar=%beforevar%
    
    set name_re="^(%varname%=|# %varname% is not set)"
-   rem echo name_re=%name_re%; before_re=%before_re%
+   rem echo name_re=%name_re%
 
    grep -Eq %name_re% %configfilename% && set "foundname=y"
    
    if not "%beforevar%"=="" (
-      set before_re="^(%beforevar%=|# %beforevar% is not set)"
-      grep -Eq %before_re% %configfilename% && set "foundbefore=y"
+      rem echo %beforevar%
+      grep -Eq "^(%beforevar%=|# %beforevar% is not set)" %configfilename% && set "foundbefore=y"
       if defined foundbefore (
+         rem echo foundbefore
          call :TxtAppend "^%beforevar%=" "%newline%" "%configfilename%"
          call :TxtAppend "^# %beforevar% is not set" "%newline%" "%configfilename%"
       )
@@ -149,7 +154,14 @@ exit /B
 
 
 :TxtAppend
-   echo TxtAppend %1 %2 %3
+   set anchor=%~1
+   set insert=%~2
+   set infile=%~3
+   set tmpfile=%infile%.swp
+   
+   rem echo TxtAppend %1 %2 %3
+   sed "/%anchor%/ s/$/\n%insert%/" "%infile%" > "%tmpfile%"
+   mv "%tmpfile%" "%infile%"
 exit /B
 
 
