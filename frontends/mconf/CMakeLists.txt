@@ -1,4 +1,4 @@
-find_package(Curses REQUIRED)
+#find_package(Curses REQUIRED)
 find_package(LibIntl REQUIRED)
 add_definitions(${lxdialog_DEFINES})
 
