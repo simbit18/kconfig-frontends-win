@@ -5,11 +5,11 @@ find_package(LibIntl REQUIRED)
 find_package(LibRegex REQUIRED)
 
 include_directories(
-	.
-	${CMAKE_CURRENT_BINARY_DIR}
-	${LibIntl_INCLUDE_DIRS}
-	${LibRegex_INCLUDE_DIRS}
-	${LibPDCurses_INCLUDE_DIRS}
+  .
+  ${CMAKE_CURRENT_BINARY_DIR}
+  ${LibIntl_INCLUDE_DIRS}
+  ${LibRegex_INCLUDE_DIRS}
+  ${LibPDCurses_INCLUDE_DIRS}
 )
 
 gperf_target(hconf
@@ -39,7 +39,7 @@ if (WIN32)
     kparser
     ${LibIntl_LIBRARY}
     ${LibRegex_LIBRARY}
-	${LibPDCurses_LIBRARY}
+    ${LibPDCurses_LIBRARY}
     CACHE INTERNAL ""
   )
 else ()

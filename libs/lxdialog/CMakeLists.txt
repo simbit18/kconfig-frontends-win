@@ -2,9 +2,9 @@ find_package(LibIntl REQUIRED)
 
 if (WIN32)
     set(lxdialog_INCLUDE_DIRS
-	"${CMAKE_CURRENT_SOURCE_DIR}"
-	${pdcurses_INCLUDE_DIRS}
-	CACHE INTERNAL ""
+    "${CMAKE_CURRENT_SOURCE_DIR}"
+    ${pdcurses_INCLUDE_DIRS}
+    CACHE INTERNAL ""
     )
     set(lxdialog_DEFINES "-DCURSES_LOC=\"curses.h\"" CACHE INTERNAL "")
     set(CURSES_LIBRARIES ${pdcurses_LIBRARIES})
@@ -12,9 +12,9 @@ if (WIN32)
 else ()
     find_package(Curses)
     set(lxdialog_INCLUDE_DIRS
-	"${CMAKE_CURRENT_SOURCE_DIR}"
-	${CURSES_INCLUDE_DIR}
-	CACHE INTERNAL ""
+    "${CMAKE_CURRENT_SOURCE_DIR}"
+    ${CURSES_INCLUDE_DIR}
+    CACHE INTERNAL ""
     )
 
     if (${CURSES_HAVE_NCURSES_H})
