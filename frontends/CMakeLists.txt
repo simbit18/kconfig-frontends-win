@@ -1,2 +1,2 @@
-add_subdirectory(mconf)
-add_subdirectory(conf)
+# add_subdirectory(mconf)
+# add_subdirectory(conf)
