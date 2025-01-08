@@ -21,10 +21,21 @@ add_custom_target(hconftarget ALL DEPENDS hconf.c)
 flex_target(lconf lconf.l ${CMAKE_CURRENT_BINARY_DIR}/lconf.c)
 add_custom_target(lconftarget ALL DEPENDS lconf.c)
 
+# removed flag -y
+# warning: POSIX Yacc does not support %expect [-Wyacc]
+# warning: POSIX Yacc does not support %destructor [-Wyacc]
+#
+ 
+if(CMAKE_HOST_SYSTEM_NAME MATCHES "MSYS|CYGWIN|Windows")
+  set(BISON_COMPILE_FLAGS "-t -l -p zconf")
+else()
+  set(BISON_COMPILE_FLAGS "-y -t -l -p zconf")
+endif()
+
 bison_target(yconf
   ${CMAKE_CURRENT_SOURCE_DIR}/yconf.y
   ${CMAKE_CURRENT_BINARY_DIR}/yconf.y.c
-  COMPILE_FLAGS "-y -t -l -p zconf")
+  COMPILE_FLAGS "${BISON_COMPILE_FLAGS}")
 
 add_definitions(-DROOTMENU=\"RootMenu\")
 
