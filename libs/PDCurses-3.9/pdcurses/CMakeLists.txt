@@ -9,8 +9,7 @@ add_library(pdcurses
   instr.c
   move.c
   panel.c
-  scr_dump.c  
-  terminfo.c
+  scr_dump.c
   attr.c
   clear.c
   deleteln.c
