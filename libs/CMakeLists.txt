@@ -1,5 +1,5 @@
 if (WIN32)
-    add_subdirectory(pdcurses-3.4)
+    add_subdirectory(PDCurses-3.9)
 endif ()
 
 add_subdirectory(parser)
