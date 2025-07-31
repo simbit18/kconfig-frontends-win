@@ -23,7 +23,6 @@ add_library(pdcurses
   addch.c
   beep.c
   color.c
-  deprec.c
   inch.c
   insch.c
   keyname.c
